@@ -1,0 +1,155 @@
+
+
+
+entity ServiceProvider {
+    id Long
+    spCode String
+	spName String
+}
+entity BankAccount{
+	id Long,
+	accountId String,
+	currency String,
+	currecySymbol String
+    }
+entity Invoice{
+	id Long,
+	invoiceId String,
+	description String,
+    invoicedName String,
+    invoicedEmail String,
+    invoicedPhone String,
+	amount Double
+}
+entity InvoiceItem{
+	id Long,
+	ItemId String,
+	description String,
+	amount Double
+}
+entity InvoiceType {
+     id Long,
+	 name String
+}
+entity Payment{
+ id Long,
+ trxId String,
+ amount String,
+ currency String,
+ paidBy String,
+ email String,
+ phone String,
+ channel String
+}
+
+entity Currency{
+	id Long,
+	symbol String,
+	name String
+}
+
+entity Person {
+	name String,
+	email String,
+	phoneNumber String	
+}
+ 
+entity User{
+	id Long,
+	username String,
+	password String,
+	type String
+}
+
+enum UserType {
+    OPC, SP, CUSTOMER
+}
+entity Bank{
+	id Long,
+	bankCode String,
+	bankName String
+
+}
+entity PaymentServiceProvider{
+	id Long,
+    pspCode String,
+    pspName String
+}
+
+entity CollectionAccount{
+	id Long,
+    accountId String,
+    pin String,
+    isActive Boolean
+}
+
+entity GepgInvoiceRequest{
+	requestId String,
+    invoiceId String,
+    gepgesponseId String,
+    responseDescription String
+}
+entity GepgPaymentNotification{
+	requestId String,
+    invoiceId String,
+    responseId String
+}
+
+entity PspPaymentRequest{
+ 	id Long,
+    requestId String,
+    invoiceId String,
+    tnxResponseCode String,
+    tnxResponseDescription String,
+    tnxStatus String
+
+}
+ entity Customer {
+   	id Long,
+    customerName String,
+    customerEmail String,
+    customerPhone String
+ 
+ }
+
+
+
+
+relationship OneToOne {
+	Invoice{invoiceTypeId} to InvoiceType,
+    User{personId} to Person
+    Payment{invoiceRequestId} to GepgInvoiceRequest
+    Payment{invoiceRequestId} to PspPaymentRequest
+    Payment{invoiceRequestId} to GepgPaymentNotification
+}
+relationship OneToMany {
+	
+	Invoice{spId} to ServiceProvider,
+    GepgInvoiceRequest{invoiceId} to Invoice,
+    InvoiceItem{invoiceId} to Invoice
+    BankAccount{bankId} to ServiceProvider
+
+
+    
+
+}
+
+relationship ManyToMany {
+	Job{task(title)} to Task{job}
+}
+
+relationship ManyToOne {
+	Employee{manager} to Employee
+}
+
+
+// Set pagination options
+paginate JobHistory, Employee with infinite-scroll
+paginate Job with pagination
+
+dto * with mapstruct
+
+// Set service options to all except few
+service all with serviceImpl except Employee, Job
+// Set an angular suffix
+angularSuffix * with mySuffix
